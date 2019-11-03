@@ -15,7 +15,8 @@ class MunitModel(BaseModel):
         lr = self.opt.lr
 
         self.model_names = ['G_A', 'G_B']
-        self.loss_names = ['d_total', 'g_total']
+        self.loss_names = ['d_total', 'g_total', 'g_rec_x_a', 'g_rec_x_b', 'g_rec_s_a', 'g_rec_s_b', 'g_rec_c_a',
+                           'g_rec_c_b']
         self.visual_names = []
         # Initiate the networks
         if self.isTrain:
