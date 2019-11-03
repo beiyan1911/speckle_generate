@@ -40,7 +40,7 @@ from imageio import imsave
 # plt.show()
 # *****************************  end show  —******************
 
-crop_size = 256
+crop_size = 128
 
 # 从200张 斑点图中 截取 20000 张图片
 lr_dir = '/Users/beiyan/Documents/Projects/data/fits/064612'
@@ -55,7 +55,7 @@ total_index = 0
 for f in paths[:100]:
     data = fits.getdata(f, ext=0)[100:-100, 100: -100]
     h, w = np.shape(data)
-    for i in range(200):
+    for i in range(110):
         total_index += 1
         xt = random.randint(1, w - crop_size)
         yt = random.randint(1, h - crop_size)
@@ -85,7 +85,7 @@ total_index = 0
 for f in paths[:50]:
     data = fits.getdata(f, ext=0)[100:-100, 100: -100]
     h, w = np.shape(data)
-    for i in range(400):
+    for i in range(220):
         total_index += 1
         xt = random.randint(1, w - crop_size)
         yt = random.randint(1, h - crop_size)

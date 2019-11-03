@@ -8,12 +8,12 @@ class SummaryHelper(object):
         super(SummaryHelper, self).__init__()
         self.writer = SummaryWriter(logdir=save_path, comment=comment, flush_secs=flush_secs)
 
-    def add_summary(self, current_summary):
+    def add_summary(self, current_summary, global_step):
         for key, value in current_summary.items():
             if isinstance(value, np.ndarray):
-                self.writer.add_image(key, value)
+                self.writer.add_image(key, value, global_step)
             elif isinstance(value, float):
-                self.writer.add_scalar(key, value)
+                self.writer.add_scalar(key, value, global_step)
 
     @staticmethod
     def print_current_losses(epoch, iters, losses):

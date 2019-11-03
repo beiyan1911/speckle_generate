@@ -64,6 +64,7 @@ class BaseModel(ABC):
             prefix (int) -- current epoch; used in the file name '%s_net_%s.pth' % (epoch, name)
         """
         epoch = 0
+        summary_step = 0
         # load optimizer and other setting
         load_filename = '%s_optimizer.pth' % prefix
         load_path = os.path.join(self.opt.checkpoints_dir, load_filename)
@@ -71,6 +72,8 @@ class BaseModel(ABC):
             print('loading the optimizer from %s' % load_path)
             opt_dict = torch.load(load_path)
             epoch = opt_dict['epoch']
+            if 'summary_step' in opt_dict.keys():
+                summary_step = opt_dict['summary_step']
             for name in self.optimizer_names:
                 if isinstance(name, str):
                     optimizer = getattr(self, name)
@@ -90,12 +93,14 @@ class BaseModel(ABC):
                 if hasattr(state_dict, '_metadata'):
                     del state_dict._metadata
                 net.load_state_dict(state_dict)
-        return epoch
+        return epoch, summary_step
 
-    def save_networks(self, prefix, epoch):
+    def save_networks(self, prefix, epoch, summary_step=-1):
         """
+
         :param prefix:
         :param epoch:
+        :param summary_step: -1 时不保存
         :return:
         """
 
@@ -119,6 +124,8 @@ class BaseModel(ABC):
                 optimizer = getattr(self, name)
                 opt_dict[name] = optimizer.state_dict()
         opt_dict['epoch'] = epoch
+        if summary_step >= 0:
+            opt_dict['summary_step'] = summary_step
         save_filename = '%s_optimizer.pth' % (prefix)
         save_path = os.path.join(self.opt.checkpoints_dir, save_filename)
         torch.save(opt_dict, save_path)

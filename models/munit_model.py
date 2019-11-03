@@ -49,7 +49,7 @@ class MunitModel(BaseModel):
             self.optimizer_G = torch.optim.Adam([p for p in g_params if p.requires_grad],
                                                 lr=lr, betas=(self.opt.beta1, self.opt.beta2),
                                                 weight_decay=self.opt.weight_decay)
-            self.optimizer_names = ['optimizer_D', 'optimizer_G']
+            self.optimizer_names = ['optimizer_D', 'optimizer_G']  # 为空则不保存 optimizer
             self.optimizers.append(self.optimizer_D)
             self.optimizers.append(self.optimizer_G)
 

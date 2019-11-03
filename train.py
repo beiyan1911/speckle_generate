@@ -23,10 +23,8 @@ if __name__ == '__main__':
     del valid_loader
 
     train_Summary = SummaryHelper(save_path=os.path.join(opt.log_dir, 'train'), comment=opt.model, flush_secs=20)
-
-    epoch_start = model.setup()
-
     total_iters = 0
+    epoch_start, summary_step = model.setup()
 
     for epoch in range(epoch_start, opt.niter + opt.niter_decay + 1):
         epoch_start_time = time.time()
@@ -48,17 +46,18 @@ if __name__ == '__main__':
             # ***************   save latest ckp*************************#
             if total_iters % opt.save_latest_freq == 0:  # cache our latest model every <save_latest_freq> iterations
                 print('saving the latest model (epoch %d, total_iters %d)' % (epoch, total_iters))
-                model.save_networks('latest', epoch)
+                summary_step = summary_step + 1
+                model.save_networks('latest', epoch, summary_step=summary_step)
                 losses = model.get_current_losses()
-                train_Summary.add_summary(losses)
+                train_Summary.add_summary(losses, global_step=summary_step)
                 test_image_outputs = model.sample(valid_data)
                 write_2images(test_image_outputs, opt.display_size, opt.sample_dir,
                               'test_%08d_%04d' % (epoch + 1, epoch_iter))
 
         if epoch % opt.save_epoch_freq == 0:  # cache our model every <save_epoch_freq> epochs
             print('saving the model at the end of epoch %d, iters %d' % (epoch, total_iters))
-            model.save_networks('latest', epoch)
-            model.save_networks(epoch)
+
+            model.save_networks('epoch-%04d' % epoch, epoch, summary_step=summary_step)
         print('End of epoch %d / %d \t Time Taken: %d sec' % (
             epoch, opt.niter + opt.niter_decay, time.time() - epoch_start_time))
         model.update_learning_rate()

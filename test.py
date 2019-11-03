@@ -39,7 +39,7 @@ if __name__ == '__main__':
         if i >= opt.num_test:  # only apply our model to opt.num_test images.
             break
         model.set_input(data)  # unpack data from data loader
-        image_a = data['A']
+        image_a = data['A'].to(device)
         image_a_path = data['A_paths'][0]
 
         tag = time.strftime("%Y-%m-%d-%H_%M_%S", time.localtime())
