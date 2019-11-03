@@ -1,12 +1,14 @@
 import numpy as np
-# from torch.utils.tensorboard import SummaryWriter
-from tensorboardX import SummaryWriter
+from torch.utils.tensorboard import SummaryWriter
+
+
+# from tensorboardX import SummaryWriter
 
 
 class SummaryHelper(object):
     def __init__(self, save_path, comment, flush_secs):
         super(SummaryHelper, self).__init__()
-        self.writer = SummaryWriter(logdir=save_path, comment=comment, flush_secs=flush_secs)
+        self.writer = SummaryWriter(log_dir=save_path, comment=comment, flush_secs=flush_secs,filename_suffix='.log')
 
     def add_summary(self, current_summary, global_step):
         for key, value in current_summary.items():
