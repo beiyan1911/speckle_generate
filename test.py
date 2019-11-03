@@ -19,8 +19,8 @@ if __name__ == '__main__':
     opt.serial_batches = True  # disable data shuffling; comment this line if results on randomly chosen images are needed.
     opt.no_flip = True  # no flip; comment this line if results on flipped images are needed.
     opt.phase = 'test'
-    opt.num_test = 2
-    opt.num_style = 3
+    opt.num_test = 4
+    opt.num_style = 9
     model = create_model(opt)
 
     device = torch.device('cuda:{}'.format(opt.gpu_ids[0])) if opt.gpu_ids else torch.device('cpu')
@@ -39,7 +39,7 @@ if __name__ == '__main__':
         if i >= opt.num_test:  # only apply our model to opt.num_test images.
             break
         model.set_input(data)  # unpack data from data loader
-        image_a = data['A']
+        image_a = data['A'].to(device)
         image_a_path = data['A_paths'][0]
 
         tag = time.strftime("%Y-%m-%d-%H_%M_%S", time.localtime())
