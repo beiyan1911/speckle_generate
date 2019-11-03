@@ -1,5 +1,5 @@
 display_size: 4               # How many images do you want to display each time
-save_epoch_freq: 5            # How often epoch do you want to save trained models
+save_epoch_freq: 1            # How often epoch do you want to save trained models
 save_latest_freq: 200         # How often batch do you want to save trained models
 print_freq: 5                 # How often batch do you want to save trained models
 load_flag:                    # How often do you want to log the training stats
@@ -42,6 +42,6 @@ dis:
 input_dim_a: 1                              # number of image channels [1/3]
 input_dim_b: 1                              # number of image channels [1/3]
 num_workers: 2                              # number of data loading threads
-crop_size: 256                              # random crop image of this size
-new_size: 256                              # resize  image to new size
+crop_size: 128                              # random crop image of this size
+new_size: 128                              # resize  image to new size
 no_flip: True

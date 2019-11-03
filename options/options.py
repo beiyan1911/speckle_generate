@@ -16,14 +16,14 @@ class BaseOptions():
     def initialize(self):
         if not self.initialized:
             #  demo_edges2handbags  demo_speckle
-            self.parser.add_argument('--data_root', default='./datasets/demo_speckle/', type=str, help='# of iter to linearly decay learning rate to zero')
+            self.parser.add_argument('--data_root', default='../datasets/demo_speckle/', type=str, help='# of iter to linearly decay learning rate to zero')
             self.parser.add_argument('--config', default='configs/demo_speckle.yaml', type=str, help='Path to the config file.')
-            self.parser.add_argument('--output_path', default='./outputs', type=str, help="outputs path")
+            self.parser.add_argument('--output_path', default='../outputs', type=str, help="outputs path")
             self.parser.add_argument('--model', default='munit', type=str, help="MUNIT|UNIT")
             self.parser.add_argument('--phase', default='train', type=str, help='train, val, test, etc')
             self.parser.add_argument('--epoch_count', default=1, type=int, help='the starting epoch count, we save the model by <epoch_count>, <epoch_count>+<save_latest_freq>, ...')
             self.parser.add_argument('--direction', default='AtoB', type=str, help='AtoB or BtoA')
-            self.parser.add_argument('--preprocess', default='scrop', type=str, help='scaling and cropping of images at load time [resize_and_crop | crop | none]')
+            self.parser.add_argument('--preprocess', default='', type=str, help='scaling and cropping of images at load time [resize_and_crop | crop | none]')
             self.parser.add_argument('--print_network', action='store_true', help='if specified, print more debugging information')
             self.parser.add_argument('--serial_batches', action='store_true', help='if true, takes images in order to make batches, otherwise takes them randomly')
             self.parser.add_argument('--gpu_ids', default='-1', type=str, help='gpu ids: e.g. 0  0,1,2, 0,2. use -1 for CPU')
@@ -31,7 +31,7 @@ class BaseOptions():
             self.parser.add_argument('--niter', default=100, type=int, help='# of iter at starting learning rate')
             self.parser.add_argument('--lr_decay_iters', default=50, type=int, help='multiply by a gamma every lr_decay_iters iterations')
             self.parser.add_argument('--niter_decay', default=100, type=int, help='# of iter to linearly decay learning rate to zero')
-            self.parser.add_argument('--batch_size', default=1, type=int, help='batch size')
+            self.parser.add_argument('--batch_size', default=8, type=int, help='batch size')
 
     def gather_options(self):
 
