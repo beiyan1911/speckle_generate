@@ -25,13 +25,12 @@ if __name__ == '__main__':
     train_Summary = SummaryHelper(save_path=os.path.join(opt.log_dir, 'train'), comment=opt.model, flush_secs=20)
     total_iters = 0
     epoch_start, summary_step = model.setup()
-
-    for epoch in range(epoch_start, opt.niter + opt.niter_decay + 1):
+    iter_start_time = time.time()
+    for epoch in range(epoch_start + 1, opt.niter + opt.niter_decay + 1):
         epoch_start_time = time.time()
         epoch_iter = 0  # epoch内迭代的数据量
 
         for i, data in enumerate(train_loader):
-            iter_start_time = time.time()
 
             total_iters += 1
             epoch_iter += 1
@@ -41,7 +40,9 @@ if __name__ == '__main__':
             # *************** show visuals, logs, loss *************************#
             if total_iters % opt.print_freq == 0:
                 losses = model.get_current_losses()
-                SummaryHelper.print_current_losses(epoch, epoch_iter, losses)
+                td = time.time() - iter_start_time
+                SummaryHelper.print_current_losses(epoch, epoch_iter, losses, td)
+                iter_start_time = time.time()
 
             # ***************   save latest ckp*************************#
             if total_iters % opt.save_latest_freq == 0:  # cache our latest model every <save_latest_freq> iterations
@@ -52,7 +53,7 @@ if __name__ == '__main__':
                 train_Summary.add_summary(losses, global_step=summary_step)
                 test_image_outputs = model.sample(valid_data)
                 write_2images(test_image_outputs, opt.display_size, opt.sample_dir,
-                              'test_%08d_%04d' % (epoch + 1, epoch_iter))
+                              'test_%08d_%04d' % (epoch, epoch_iter))
 
         if epoch % opt.save_epoch_freq == 0:  # cache our model every <save_epoch_freq> epochs
             print('saving the model at the end of epoch %d, iters %d' % (epoch, total_iters))

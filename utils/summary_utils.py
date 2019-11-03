@@ -8,7 +8,7 @@ from torch.utils.tensorboard import SummaryWriter
 class SummaryHelper(object):
     def __init__(self, save_path, comment, flush_secs):
         super(SummaryHelper, self).__init__()
-        self.writer = SummaryWriter(log_dir=save_path, comment=comment, flush_secs=flush_secs,filename_suffix='.log')
+        self.writer = SummaryWriter(log_dir=save_path, comment=comment, flush_secs=flush_secs, filename_suffix='.log')
 
     def add_summary(self, current_summary, global_step):
         for key, value in current_summary.items():
@@ -18,7 +18,7 @@ class SummaryHelper(object):
                 self.writer.add_scalar(key, value, global_step)
 
     @staticmethod
-    def print_current_losses(epoch, iters, losses):
+    def print_current_losses(epoch, iters, losses, time):
         """print current losses on console; also save the losses to the disk
 
         Parameters:
@@ -26,7 +26,7 @@ class SummaryHelper(object):
             iters (int) -- current training iteration during this epoch (reset to 0 at the end of every epoch)
             losses (OrderedDict) -- training losses stored in the format of (name, float) pairs
         """
-        message = '(epoch: %d, iters: %d) ' % (epoch, iters)
+        message = '(epoch: %d, iters: %d ,time: %.3f) ' % (epoch, iters, time)
         for k, v in losses.items():
             message += '%s: %.3f ' % (k, v)
         print(message)  # print the message
