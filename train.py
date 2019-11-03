@@ -46,9 +46,10 @@ if __name__ == '__main__':
             # ***************   save latest ckp*************************#
             if total_iters % opt.save_latest_freq == 0:  # cache our latest model every <save_latest_freq> iterations
                 print('saving the latest model (epoch %d, total_iters %d)' % (epoch, total_iters))
-                model.save_networks('latest', epoch)
+                summary_step = summary_step + 1
+                model.save_networks('latest', epoch, summary_step)
                 losses = model.get_current_losses()
-                train_Summary.add_summary(losses)
+                train_Summary.add_summary(losses, global_step=summary_step)
                 test_image_outputs = model.sample(valid_data)
                 write_2images(test_image_outputs, opt.display_size, opt.sample_dir,
                               'test_%08d_%04d' % (epoch + 1, epoch_iter))
