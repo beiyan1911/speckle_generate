@@ -1,5 +1,5 @@
 import numpy as np
-from utils.util import write_2images
+from utils.image_utils import write_2images
 import os
 from utils.summary_utils import SummaryHelper
 import time

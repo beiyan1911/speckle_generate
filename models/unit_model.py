@@ -1,5 +1,5 @@
 from models.networks import MsImageDis, VAEGen
-from utils.net_util import weights_init, get_model_list, vgg_preprocess, load_vgg16, get_scheduler
+from utils.net_utils import weights_init, get_model_list, vgg_preprocess, load_vgg16, get_scheduler
 import torch
 import torch.nn as nn
 import os

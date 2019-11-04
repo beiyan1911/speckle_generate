@@ -4,7 +4,7 @@ import shutil
 
 import yaml
 
-from utils import util
+from utils.image_utils import mkdir
 
 
 class BaseOptions():
@@ -59,12 +59,12 @@ class BaseOptions():
         opt.log_dir = os.path.join(opt.output_path, model_name, 'logs')
         opt.test_dir = os.path.join(opt.output_path, model_name, 'test')
 
-        util.mkdir(opt.output_path)
-        util.mkdir(os.path.join(opt.output_path, model_name))
-        util.mkdir(opt.checkpoints_dir)
-        util.mkdir(opt.sample_dir)
-        util.mkdir(opt.log_dir)
-        util.mkdir(opt.test_dir)
+        mkdir(opt.output_path)
+        mkdir(os.path.join(opt.output_path, model_name))
+        mkdir(opt.checkpoints_dir)
+        mkdir(opt.sample_dir)
+        mkdir(opt.log_dir)
+        mkdir(opt.test_dir)
         shutil.copy(opt.config, os.path.join(opt.checkpoints_dir,'config.yaml'))
 
         return opt

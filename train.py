@@ -7,7 +7,7 @@ from data import create_data_loader
 from models import create_model
 from options import options
 from utils.summary_utils import SummaryHelper
-from utils.util import write_2images
+from utils.image_utils import write_2images
 
 if __name__ == '__main__':
     opt = options.BaseOptions().parse()
@@ -15,7 +15,7 @@ if __name__ == '__main__':
 
     model = create_model(opt)
 
-    train_loader = create_data_loader(opt, 'train', opt.batch_size, opt.serial_batches, num_workers=opt.num_workers)
+    train_loader = create_data_loader(opt, 'train', opt.batch_size, not opt.serial_batches, num_workers=opt.num_workers)
     valid_loader = create_data_loader(opt, 'valid', 1, False, 1)
 
     # valid 数据集

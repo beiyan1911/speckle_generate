@@ -4,7 +4,8 @@ import numpy as np
 from models.base_model import BaseModel
 from models.networks import AdaINGen, MsImageDis, get_scheduler
 from models.networks import init_net
-from utils.net_util import vgg_preprocess, load_vgg16, get_scheduler
+from utils.net_utils import vgg_preprocess, load_vgg16, get_scheduler
+from utils.image_utils import tensor2im
 
 
 class MunitModel(BaseModel):
@@ -50,7 +51,7 @@ class MunitModel(BaseModel):
             self.optimizer_G = torch.optim.Adam([p for p in g_params if p.requires_grad],
                                                 lr=lr, betas=(self.opt.beta1, self.opt.beta2),
                                                 weight_decay=self.opt.weight_decay)
-            self.optimizer_names = ['optimizer_D', 'optimizer_G']  # 为空则不保存 optimizer
+            self.optimizer_names = ['optimizer_D', 'optimizer_G']
             self.optimizers.append(self.optimizer_D)
             self.optimizers.append(self.optimizer_G)
 
@@ -182,8 +183,7 @@ class MunitModel(BaseModel):
 
     def sample(self, sample_data):
         x_a, x_b = sample_data['images_a'], sample_data['images_b']
-        self.netG_A.eval()
-        self.netG_B.eval()
+        self.eval()
 
         s_a2 = torch.randn(x_a.size(0), self.style_dim, 1, 1).to(self.device)
         s_b2 = torch.randn(x_b.size(0), self.style_dim, 1, 1).to(self.device)
@@ -191,18 +191,20 @@ class MunitModel(BaseModel):
         for i in range(x_a.size(0)):
             c_a, s_a_fake = self.netG_A.encode(x_a[i].unsqueeze(0))
             c_b, s_b_fake = self.netG_B.encode(x_b[i].unsqueeze(0))
-            x_a_recon.append(self.netG_A.decode(c_a, s_a_fake).cpu().detach().numpy())
-            x_b_recon.append(self.netG_B.decode(c_b, s_b_fake).cpu().detach().numpy())
-            x_ba1.append(self.netG_A.decode(c_b, self.s_a_fixed[i].unsqueeze(0)).cpu().detach().numpy())
-            x_ba2.append(self.netG_A.decode(c_b, s_a2[i].unsqueeze(0)).cpu().detach().numpy())
-            x_ab1.append(self.netG_B.decode(c_a, self.s_b_fixed[i].unsqueeze(0)).cpu().detach().numpy())
-            x_ab2.append(self.netG_B.decode(c_a, s_b2[i].unsqueeze(0)).cpu().detach().numpy())
+            x_a_recon.append(tensor2im(self.netG_A.decode(c_a, s_a_fake)))
+            x_b_recon.append(tensor2im(self.netG_B.decode(c_b, s_b_fake)))
+            x_ba1.append(tensor2im(self.netG_A.decode(c_b, self.s_a_fixed[i].unsqueeze(0))))
+            x_ba2.append(tensor2im(self.netG_A.decode(c_b, s_a2[i].unsqueeze(0))))
+            x_ab1.append(tensor2im(self.netG_B.decode(c_a, self.s_b_fixed[i].unsqueeze(0))))
+            x_ab2.append(tensor2im(self.netG_B.decode(c_a, s_b2[i].unsqueeze(0))))
         x_a_recon, x_b_recon = np.concatenate(x_a_recon), np.concatenate(x_b_recon)
         x_ba1, x_ba2 = np.concatenate(x_ba1), np.concatenate(x_ba2)
         x_ab1, x_ab2 = np.concatenate(x_ab1), np.concatenate(x_ab2)
-        self.netG_A.train()
-        self.netG_B.train()
-        return x_a.cpu().detach().numpy(), x_a_recon, x_ab1, x_ab2, x_b.cpu().detach().numpy(), x_b_recon, x_ba1, x_ba2
+        x_a = tensor2im(x_a)
+        x_b = tensor2im(x_b)
+        self.train()
+
+        return x_a, x_a_recon, x_ab1, x_ab2, x_b, x_b_recon, x_ba1, x_ba2
 
     def optimize_parameters(self):
         self.dis_update(self.images_A, self.images_B)

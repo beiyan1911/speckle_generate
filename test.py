@@ -9,7 +9,7 @@ from imageio import imsave
 from data import create_data_loader
 from models import create_model
 from options.options import BaseOptions
-from utils.util import make_grid
+from utils.image_utils import make_grid
 
 if __name__ == '__main__':
     opt = BaseOptions().parse()  # get test options

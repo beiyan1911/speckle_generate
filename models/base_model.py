@@ -1,5 +1,5 @@
 import os
-from abc import ABC
+from abc import ABC, abstractmethod
 from models.networks import get_scheduler
 import torch
 from collections import OrderedDict
@@ -56,6 +56,34 @@ class BaseModel(ABC):
             self.schedulers = [get_scheduler(optimizer, self.opt) for optimizer in self.optimizers]
         self.print_networks(self.opt.print_network)
         return epoch
+
+    @abstractmethod
+    def optimize_parameters(self):
+        """Calculate losses, gradients, and update network weights; called in every training iteration"""
+        pass
+
+    @abstractmethod
+    def set_input(self, input):
+        """Unpack input data from the dataloader and perform necessary pre-processing steps.
+
+        Parameters:
+            input (dict): includes the data itself and its metadata information.
+        """
+        pass
+
+    def eval(self):
+        """Make models eval mode during test time"""
+        for name in self.model_names:
+            if isinstance(name, str):
+                net = getattr(self, 'net' + name)
+                net.eval()
+
+    def train(self):
+        """Make models eval mode during test time"""
+        for name in self.model_names:
+            if isinstance(name, str):
+                net = getattr(self, 'net' + name)
+                net.train()
 
     def load_networks(self, prefix):
         """Load all the networks from the disk.
